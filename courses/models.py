@@ -19,6 +19,31 @@ class Course(models.Model):
     code = models.CharField(max_length=20)
     title = models.CharField(max_length=200)
     level = models.CharField(max_length=2, choices=LEVEL_CHOICES, default=LEVEL_08)
-    drps_url = models.URLField()
+    drps_url = models.URLField(blank=True, default='',
+                               verbose_name='DRPS url',
+                               help_text='Please enter the url of the course\'s DRPS page')
     semester = models.CharField(max_length=1, choices=SEMESTER_CHOICES)
+
+
+class CourseFeedback(models.Model):
+    CHOICE_4 = 'Strongly Agree'
+    CHOICE_3 = 'Agree'
+    CHOICE_2 = 'Disagree'
+    CHOICE_1 = 'Stongly Disagree'
+    CHOICE_0 = 'N/A'
+    RATING_CHOICES = (
+        (0, CHOICE_0),
+        (1, CHOICE_1),
+        (2, CHOICE_2),
+        (3, CHOICE_3),
+        (4, CHOICE_4),
+    )
+    course = models.ForeignKey(Course)
+    comment = models.CharField(max_length=1000, default='', blank=True)
+    r_course_difficulty = models.IntegerField(choices=RATING_CHOICES, default=0)
+    r_course_organization = models.IntegerField(choices=RATING_CHOICES, default=0)
+    r_tutor_presentation = models.IntegerField(choices=RATING_CHOICES, default=0)
+    r_tutor_support = models.IntegerField(choices=RATING_CHOICES, default=0)
+    r_recommendation = models.IntegerField(choices=RATING_CHOICES, default=0)
+
 
