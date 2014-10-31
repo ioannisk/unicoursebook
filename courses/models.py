@@ -29,7 +29,7 @@ class CourseFeedback(models.Model):
     CHOICE_4 = 'Strongly Agree'
     CHOICE_3 = 'Agree'
     CHOICE_2 = 'Disagree'
-    CHOICE_1 = 'Stongly Disagree'
+    CHOICE_1 = 'Strongly Disagree'
     CHOICE_0 = 'N/A'
     RATING_CHOICES = (
         (0, CHOICE_0),
@@ -45,5 +45,19 @@ class CourseFeedback(models.Model):
     r_tutor_presentation = models.IntegerField(choices=RATING_CHOICES, default=0)
     r_tutor_support = models.IntegerField(choices=RATING_CHOICES, default=0)
     r_recommendation = models.IntegerField(choices=RATING_CHOICES, default=0)
+    visible = models.BooleanField(default=True)
+    #todo add user info
 
 
+class FeedbackVotes(models.Model):
+    CHOICE_1 = 'Like'
+    CHOICE_2 = 'Dislike'
+    CHOICE_3 = 'Inappropriate'
+    VOTE_CHOICES = (
+        ('PLUS', CHOICE_1),
+        ('MINUS', CHOICE_2),
+        ('FLAG', CHOICE_3),
+    )
+    course_feedback = models.ForeignKey(CourseFeedback)
+    vote = models.CharField(max_length=10, choices=VOTE_CHOICES, default='')
+    #todo add user info
