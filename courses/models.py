@@ -1,15 +1,19 @@
 from django.db import models
 
-#model to describe university courses
-#todo add support for universities
+# model to describe university courses
+# todo add support for universities
+
+
 class Course(models.Model):
     LEVEL_07 = '07'
     LEVEL_08 = '08'
     LEVEL_09 = '09'
+    LEVEL_10 = '10'
     LEVEL_CHOICES = (
         (LEVEL_07, '7'),
         (LEVEL_08, '8'),
         (LEVEL_09, '9'),
+        (LEVEL_10, '10'),
     )
     SEMESTER_1 = '1'
     SEMESTER_2 = '2'
@@ -25,9 +29,12 @@ class Course(models.Model):
                                help_text='Please enter the url of the course\'s DRPS page')
     semester = models.CharField(max_length=1, choices=SEMESTER_CHOICES)
 
+    def __str__(self):
+        return '%s (%s)' % (self.title, self.code)
 
-#model to describe feedback on courses
-#todo add support for users
+
+# model to describe feedback on courses
+# todo add support for users
 class CourseFeedback(models.Model):
     CHOICE_4 = 'Strongly Agree'
     CHOICE_3 = 'Agree'
@@ -43,13 +50,21 @@ class CourseFeedback(models.Model):
     )
     course = models.ForeignKey(Course)
     comment = models.CharField(max_length=1000, default='', blank=True)
-    r_course_difficulty = models.IntegerField(choices=RATING_CHOICES, default=0)
-    r_course_organization = models.IntegerField(choices=RATING_CHOICES, default=0)
-    r_tutor_presentation = models.IntegerField(choices=RATING_CHOICES, default=0)
-    r_tutor_support = models.IntegerField(choices=RATING_CHOICES, default=0)
-    r_recommendation = models.IntegerField(choices=RATING_CHOICES, default=0)
+    r_course_difficulty = models.IntegerField(choices=RATING_CHOICES, default=0, verbose_name='The course is easy')
+    r_course_organization = models.IntegerField(choices=RATING_CHOICES, default=0,
+                                                verbose_name='The course is well organized')
+    r_tutor_presentation = models.IntegerField(choices=RATING_CHOICES, default=0,
+                                               verbose_name='The tutor presentation skills are good')
+    r_tutor_support = models.IntegerField(choices=RATING_CHOICES, default=0,
+                                          verbose_name='The tutor is helpful with students')
+    r_recommendation = models.IntegerField(choices=RATING_CHOICES, default=0, verbose_name='I recommend this course')
     visible = models.BooleanField(default=True)
-    #todo add user info
+    # todo add user info
+
+    def score(self):
+        return (self.r_course_difficulty + self.r_course_organization
+                + self.r_tutor_presentation + self.r_tutor_support
+                + self.r_recommendation) / 5
 
 
 class FeedbackVotes(models.Model):
