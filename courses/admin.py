@@ -1,4 +1,28 @@
 from django.contrib import admin
-from courses.models import Course
+from courses.models import Course, CourseFeedback
+from django.forms import Textarea, ModelForm
 
-admin.site.register(Course)
+# model form is needed in order to use text area for comment
+class CourseFeedbackModelForm(ModelForm):
+    class Meta:
+        model = CourseFeedback
+        widgets = {
+            'comment': Textarea(attrs={'cols': 80, 'rows': 10}),
+        }
+        fields = ['course', 'r_course_difficulty', 'r_course_organization', 'r_tutor_presentation', 'r_tutor_support',
+                  'r_recommendation', 'comment']
+
+
+class CourseFeedbackAdmin(admin.ModelAdmin):
+    form = CourseFeedbackModelForm
+    list_display = ('course', 'comment', 'score')
+
+
+class CourseAdmin(admin.ModelAdmin):
+    model = Course
+    fields = ['title', 'code', 'level', 'semester', 'drps_url']
+
+
+admin.site.register(Course, CourseAdmin)
+admin.site.register(CourseFeedback, CourseFeedbackAdmin)
+
