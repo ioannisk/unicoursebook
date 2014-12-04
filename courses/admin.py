@@ -1,8 +1,9 @@
 from django.contrib import admin
-from courses.models import Course, CourseFeedback
+from courses.models import Course, CourseFeedback, School
 from django.forms import Textarea, ModelForm
 
 # model form is needed in order to use text area for comment
+
 class CourseFeedbackModelForm(ModelForm):
     class Meta:
         model = CourseFeedback
@@ -20,9 +21,10 @@ class CourseFeedbackAdmin(admin.ModelAdmin):
 
 class CourseAdmin(admin.ModelAdmin):
     model = Course
-    fields = ['title', 'code', 'level', 'semester', 'drps_url']
+    fields = ['school', 'title', 'code', 'level', 'semester', 'url']
 
 
+admin.site.register(School)
 admin.site.register(Course, CourseAdmin)
 admin.site.register(CourseFeedback, CourseFeedbackAdmin)
 

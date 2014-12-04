@@ -4,6 +4,15 @@ from django.db import models
 # todo add support for universities
 
 
+class School(models.Model):
+    title = models.CharField(max_length=200)
+    url = models.URLField(blank=True, default='',
+                               help_text='Please enter the url of the School\'s home page')
+
+    def __str__(self):
+        return self.title
+
+
 class Course(models.Model):
     LEVEL_07 = '07'
     LEVEL_08 = '08'
@@ -21,12 +30,12 @@ class Course(models.Model):
         (SEMESTER_1, '1'),
         (SEMESTER_2, '2'),
     )
+    school = models.ForeignKey(School)
     code = models.CharField(max_length=20)
     title = models.CharField(max_length=200)
     level = models.CharField(max_length=2, choices=LEVEL_CHOICES, default=LEVEL_08)
-    drps_url = models.URLField(blank=True, default='',
-                               verbose_name='DRPS url',
-                               help_text='Please enter the url of the course\'s DRPS page')
+    url = models.URLField(blank=True, default='',
+                               help_text='Please enter the url of the course\'s home page')
     semester = models.CharField(max_length=1, choices=SEMESTER_CHOICES)
 
     def __str__(self):
