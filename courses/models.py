@@ -1,6 +1,7 @@
 from django.db import models
 
-
+#model to describe university courses
+#todo add support for universities
 class Course(models.Model):
     LEVEL_07 = '07'
     LEVEL_08 = '08'
@@ -25,6 +26,8 @@ class Course(models.Model):
     semester = models.CharField(max_length=1, choices=SEMESTER_CHOICES)
 
 
+#model to describe feedback on courses
+#todo add support for users
 class CourseFeedback(models.Model):
     CHOICE_4 = 'Strongly Agree'
     CHOICE_3 = 'Agree'
