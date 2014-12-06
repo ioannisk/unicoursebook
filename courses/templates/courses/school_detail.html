@@ -1,9 +1,10 @@
 <h1>{{ school.title }}</h1>
+<p>Read more about the school <a href="{{ school.url }}" target="_blank">here</a>.</p>
 
 <ul>
-{% for course in view.courses %}
+{% for course in courses %}
     <li>
-    {{ course.title }}
+    {{ course.title }} ({{ course.code }})
     </li>
 {% endfor %}
 </ul>

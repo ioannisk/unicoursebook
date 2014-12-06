@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from courses.models import Course, School
 from django.views import generic
+from django.shortcuts import get_object_or_404
 
 
 class SchoolsIndexView(generic.ListView):
@@ -12,9 +13,8 @@ class SchoolsIndexView(generic.ListView):
         return School.objects.order_by('title')
 
 
-class SchoolDetailView(generic.DetailView):
-    template_name = 'courses/school_detail.html'
-    model = School
-
-    def courses(self):
-        return Course.objects.order_by('title')
+def school_detail(request, school_id):
+    school = get_object_or_404(School, pk=school_id)
+    courses = school.course_set.order_by('title')
+    context = {'school': school, 'courses': courses}
+    return render(request, 'courses/school_detail.html', context)
