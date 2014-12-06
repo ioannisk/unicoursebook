@@ -1,0 +1,9 @@
+{% if schools %}
+    <ul>
+    {% for school in schools %}
+    <li><a href="{% url 'courses:school_detail' school.id %}">{{ school.title }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No schools!</p>
+{% endif %}
