@@ -1,6 +1,7 @@
 <h1>{{ school.title }}</h1>
 <p>Read more about the school <a href="{{ school.url }}" target="_blank">here</a>.</p>
 
+{% if courses %}
 <ul>
 {% for course in courses %}
     <li>
@@ -8,3 +9,6 @@
     </li>
 {% endfor %}
 </ul>
+{% else %}
+    <p>No courses have been defined for this school.</p>
+{% endif %}
