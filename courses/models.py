@@ -1,7 +1,7 @@
 from django.db import models
+from datetime import datetime
 
 # model to describe university courses
-# todo add support for universities
 
 
 class School(models.Model):
@@ -43,7 +43,6 @@ class Course(models.Model):
 
 
 # model to describe feedback on courses
-# todo add support for users
 class CourseFeedback(models.Model):
     CHOICE_4 = 'Strongly Agree'
     CHOICE_3 = 'Agree'
@@ -67,9 +66,11 @@ class CourseFeedback(models.Model):
     r_tutor_support = models.IntegerField(choices=RATING_CHOICES, default=0,
                                           verbose_name='The tutor is helpful with students')
     r_recommendation = models.IntegerField(choices=RATING_CHOICES, default=0, verbose_name='I recommend this course')
+    submission_date = models.DateTimeField(default=datetime.now)
     # administrator can mark inappropriate comments as visible=FALSE, so end users don't see them
     visible = models.BooleanField(default=True)
-    # todo add user info
+
+
 
     def __str__(self):
         return '%s (%d)' % (self.comment, self.score())
@@ -78,6 +79,10 @@ class CourseFeedback(models.Model):
         return (self.r_course_difficulty + self.r_course_organization
                 + self.r_tutor_presentation + self.r_tutor_support
                 + self.r_recommendation) / 5
+
+    class Meta:
+        # set default ordering (eg in admin) to most recent first
+        ordering = ['-submission_date']
 
 
 class FeedbackVotes(models.Model):
@@ -91,4 +96,3 @@ class FeedbackVotes(models.Model):
     )
     course_feedback = models.ForeignKey(CourseFeedback)
     vote = models.CharField(max_length=10, choices=VOTE_CHOICES, default='')
-    #todo add user info

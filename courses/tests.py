@@ -1,6 +1,8 @@
 from django.test import TestCase
 from courses.models import School, Course, CourseFeedback
 from django.core.urlresolvers import reverse
+from django.utils import timezone
+import datetime
 
 
 class SchoolViewTest(TestCase):
@@ -32,7 +34,6 @@ class SchoolViewTest(TestCase):
 
 
 class CourseViewTest(TestCase):
-
     def test_not_visible_feedback_is_not_displayed(self):
         test_school = School.objects.create(title='TestSchool')
         test_course = Course.objects.create(school=test_school, title='TestCourse')
@@ -48,3 +49,14 @@ class CourseViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "No feedback has been given for this course yet.")
         self.assertQuerysetEqual(response.context['course_feedbacks'], [])
+
+    def test_course_detail_ordering(self):
+        test_school = School.objects.create(title='TestSchool')
+        test_course = Course.objects.create(school=test_school, title='TestCourse', code='test')
+        new_time = timezone.now()
+        old_time = timezone.now() - datetime.timedelta(days=30)
+        CourseFeedback.objects.create(course=test_course, submission_date=new_time, comment='newer')
+        CourseFeedback.objects.create(course=test_course, submission_date=old_time, comment='older')
+        response = self.client.get(reverse('courses:course_detail', args=(test_course.id,)))
+        self.assertQuerysetEqual(response.context['course_feedbacks'],
+                                 ['<CourseFeedback: newer (0)>', '<CourseFeedback: older (0)>'])
