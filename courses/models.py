@@ -67,6 +67,7 @@ class CourseFeedback(models.Model):
     r_tutor_support = models.IntegerField(choices=RATING_CHOICES, default=0,
                                           verbose_name='The tutor is helpful with students')
     r_recommendation = models.IntegerField(choices=RATING_CHOICES, default=0, verbose_name='I recommend this course')
+    # administrator can mark inappropriate comments as visible=FALSE, so end users don't see them
     visible = models.BooleanField(default=True)
     # todo add user info
 

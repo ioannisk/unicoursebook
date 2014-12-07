@@ -11,7 +11,7 @@ class CourseFeedbackModelForm(ModelForm):
             'comment': Textarea(attrs={'cols': 80, 'rows': 10}),
         }
         fields = ['course', 'r_course_difficulty', 'r_course_organization', 'r_tutor_presentation', 'r_tutor_support',
-                  'r_recommendation', 'comment']
+                  'r_recommendation', 'visible', 'comment']
 
 
 class CourseFeedbackAdmin(admin.ModelAdmin):
