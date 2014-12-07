@@ -71,6 +71,9 @@ class CourseFeedback(models.Model):
     visible = models.BooleanField(default=True)
     # todo add user info
 
+    def __str__(self):
+        return '%s (%d)' % (self.comment, self.score())
+
     def score(self):
         return (self.r_course_difficulty + self.r_course_organization
                 + self.r_tutor_presentation + self.r_tutor_support
