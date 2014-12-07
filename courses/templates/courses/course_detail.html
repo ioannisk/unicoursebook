@@ -1,0 +1,14 @@
+<h1>{{ course.title }} ({{ course.code }})</h1>
+<p>Read more about this course <a href="{{ course.url }}" target="_blank">here</a>.</p>
+
+{% if course_feedbacks %}
+<ul>
+{% for feedback in course_feedbacks %}
+    <li>
+    {{ feedback.score }} ({{ feedback.comment }})
+    </li>
+{% endfor %}
+</ul>
+{% else %}
+    <p>No feedback has been given for this course yet.</p>
+{% endif %}

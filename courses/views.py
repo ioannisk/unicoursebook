@@ -18,3 +18,10 @@ def school_detail(request, school_id):
     courses = school.course_set.order_by('title')
     context = {'school': school, 'courses': courses}
     return render(request, 'courses/school_detail.html', context)
+
+
+def course_detail(request, course_id):
+    course = get_object_or_404(Course, pk=course_id)
+    course_feedbacks = course.coursefeedback_set.all()
+    context = {'course': course, 'course_feedbacks': course_feedbacks}
+    return render(request, 'courses/course_detail.html', context)
