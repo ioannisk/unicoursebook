@@ -1,10 +1,46 @@
 <h1>{{ course.title }}</h1>
 
-<form action="{% url 'courses:course_feedback_submission' course.id %}" method="post">
+<form action="{% url 'courses:course_feedback' course.id %}" method="post">
     {% csrf_token %}
 
     <label for="r_course_difficulty">The course is easy</label>
     <select name="r_course_difficulty" id="r_course_difficulty" >
+        <option value="4">Strongly Agree</option>
+        <option value="3">Agree</option>
+        <option value="2">Disagree</option>
+        <option value="1">Strongly Disagree</option>
+        <option value="0">NA</option>
+    </select><br>
+
+    <label for="r_course_organization">The course is well organized</label>
+    <select name="r_course_organization" id="r_course_organization" >
+        <option value="4">Strongly Agree</option>
+        <option value="3">Agree</option>
+        <option value="2">Disagree</option>
+        <option value="1">Strongly Disagree</option>
+        <option value="0">NA</option>
+    </select><br>
+
+    <label for="r_tutor_presentation">The tutor presentation skills are good</label>
+    <select name="r_tutor_presentation" id="r_tutor_presentation" >
+        <option value="4">Strongly Agree</option>
+        <option value="3">Agree</option>
+        <option value="2">Disagree</option>
+        <option value="1">Strongly Disagree</option>
+        <option value="0">NA</option>
+    </select><br>
+
+    <label for="r_tutor_support">The tutor is helpful with students</label>
+    <select name="r_tutor_support" id="r_tutor_support" >
+        <option value="4">Strongly Agree</option>
+        <option value="3">Agree</option>
+        <option value="2">Disagree</option>
+        <option value="1">Strongly Disagree</option>
+        <option value="0">NA</option>
+    </select><br>
+
+    <label for="r_recommendation">I recommend this course</label>
+    <select name="r_recommendation" id="r_recommendation" >
         <option value="4">Strongly Agree</option>
         <option value="3">Agree</option>
         <option value="2">Disagree</option>

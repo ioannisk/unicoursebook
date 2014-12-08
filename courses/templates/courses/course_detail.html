@@ -1,5 +1,6 @@
 <h1>{{ course.title }} ({{ course.code }})</h1>
 <p>Read more about this course <a href="{{ course.url }}" target="_blank">here</a>.</p>
+<p>Submit a review about this course <a href="{% url 'courses:course_feedback' course.id %}">here</a>.</p>
 
 {% if course_feedbacks %}
 <ul>

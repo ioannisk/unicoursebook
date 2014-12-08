@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from courses.models import Course, School
+from courses.models import Course, School, CourseFeedback
 from django.views import generic
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
@@ -31,9 +31,26 @@ def course_detail(request, course_id):
 def course_feedback(request, course_id):
     course = get_object_or_404(Course, pk=course_id)
     context = {'course': course}
-    return render(request, 'courses/course_feedback.html', context)
+    if request.method == 'GET':
+        return render(request, 'courses/course_feedback.html', context)
+    if request.method == 'POST':
+        new_feedback = CourseFeedback()
+        new_feedback.course_id = course_id
+        new_feedback.r_course_difficulty = request.POST['r_course_difficulty']
+        new_feedback.r_course_organization = request.POST['r_course_organization']
+        new_feedback.r_tutor_presentation = request.POST['r_tutor_presentation']
+        new_feedback.r_tutor_support = request.POST['r_tutor_support']
+        new_feedback.r_recommendation = request.POST['r_recommendation']
+        new_feedback.save()
+        return HttpResponseRedirect(reverse('courses:course_detail', args=(course.id,)))
 
 
-def course_feedback_submission(request, course_id):
-    course = get_object_or_404(Course, pk=course_id)
-    return HttpResponseRedirect(reverse('courses:course_detail', args=(course.id,)))
+
+
+# def course_feedback_submission(request, course_id):
+#     course = get_object_or_404(Course, pk=course_id)
+#     return HttpResponseRedirect(reverse('courses:course_feedback', args=(course.id,)))
+
+
+
+
