@@ -46,7 +46,6 @@ def course_feedback(request, course_id):
 
 
 
-#wrvwrv
 # def course_feedback_submission(request, course_id):
 #     course = get_object_or_404(Course, pk=course_id)
 #     return HttpResponseRedirect(reverse('courses:course_feedback', args=(course.id,)))
