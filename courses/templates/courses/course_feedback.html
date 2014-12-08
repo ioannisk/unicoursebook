@@ -1,0 +1,17 @@
+<h1>{{ course.title }}</h1>
+
+<form action="{% url 'courses:course_feedback_submission' course.id %}" method="post">
+    {% csrf_token %}
+
+    <label for="r_course_difficulty">The course is easy</label>
+    <select name="r_course_difficulty" id="r_course_difficulty" >
+        <option value="4">Strongly Agree</option>
+        <option value="3">Agree</option>
+        <option value="2">Disagree</option>
+        <option value="1">Strongly Disagree</option>
+        <option value="0">NA</option>
+    </select><br>
+
+
+    <input type="submit" value="Submit"/>
+</form>

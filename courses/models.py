@@ -44,17 +44,17 @@ class Course(models.Model):
 
 # model to describe feedback on courses
 class CourseFeedback(models.Model):
-    CHOICE_4 = 'Strongly Agree'
-    CHOICE_3 = 'Agree'
-    CHOICE_2 = 'Disagree'
-    CHOICE_1 = 'Strongly Disagree'
-    CHOICE_0 = 'N/A'
+    CHOICE_4 = 4
+    CHOICE_3 = 3
+    CHOICE_2 = 2
+    CHOICE_1 = 1
+    CHOICE_0 = 0
     RATING_CHOICES = (
-        (0, CHOICE_0),
-        (1, CHOICE_1),
-        (2, CHOICE_2),
-        (3, CHOICE_3),
-        (4, CHOICE_4),
+        (CHOICE_0, 'N/A'),
+        (CHOICE_1, 'Strongly Disagree'),
+        (CHOICE_2, 'Disagree'),
+        (CHOICE_3, 'Agree'),
+        (CHOICE_4, 'Strongly Agree'),
     )
     course = models.ForeignKey(Course)
     comment = models.CharField(max_length=1000, default='', blank=True)
