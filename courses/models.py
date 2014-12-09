@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import datetime
+from django.contrib.auth.models import User
 
 # model to describe university courses
 
@@ -96,3 +97,13 @@ class FeedbackVotes(models.Model):
     )
     course_feedback = models.ForeignKey(CourseFeedback)
     vote = models.CharField(max_length=10, choices=VOTE_CHOICES, default='')
+
+
+#Model to describe users
+class UserProfile(models.Model):
+
+    # this line will link UserProfile to a User model
+    user = models.OneToOneField(User)
+
+    def __unicode__(self):
+        return self.user.username

@@ -8,9 +8,5 @@ urlpatterns = patterns('',
                        url(r'^(?P<school_id>\d+)/$', views.school_detail, name='school_detail'),
                        url(r'^courses/(?P<course_id>\d+)/$', views.course_detail, name='course_detail'),
                        url(r'^courses/(?P<course_id>\d+)/feedback/$', views.course_feedback, name='course_feedback'),
-                       # url(r'^courses/(?P<course_id>\d+)/feedback/submission/$', views.course_feedback_submission,
-                       #     name='course_feedback_submission'),
-                       # # url(r'^courses/(?P<course_id>\d+)/feedback/submission/handler/$',
-                       #     views.course_feedback_submission_handler,
-                       #     name='course_feedback_submission_handler'),
+                       url(r'^register/$', views.register, name='register')
 )

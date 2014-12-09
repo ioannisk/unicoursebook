@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>UniCourseBook</title>
+    </head>
+
+    <body>
+        <h1>Register with UniCourseBook</h1>
+
+        {% if registered %}
+        UniCourseBook says: <strong>thank you for registering!</strong>
+        <a href="{% url 'courses:schools_index'%}">Go to the homepage.</a><br />
+        {% else %}
+        UniCourseBook says: <strong>register here!</strong><br />
+
+        <form id="user_form" method="post" action="{% url 'courses:register' %}"
+                enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            {{ user_form.as_p }}
+            {{ profile_form.as_p }}
+
+            <input type="submit" name="submit" value="Register" />
+        </form>
+        {% endif %}
+    </body>
+</html>

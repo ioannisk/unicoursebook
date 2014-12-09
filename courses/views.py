@@ -4,6 +4,9 @@ from django.views import generic
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from courses.forms import UserForm, UserProfileForm
+
+
 
 class SchoolsIndexView(generic.ListView):
     template_name = 'courses/schools_index.html'
@@ -31,8 +34,6 @@ def course_detail(request, course_id):
 def course_feedback(request, course_id):
     course = get_object_or_404(Course, pk=course_id)
     context = {'course': course}
-    if request.method == 'GET':
-        return render(request, 'courses/course_feedback.html', context)
     if request.method == 'POST':
         new_feedback = CourseFeedback()
         new_feedback.course_id = course_id
@@ -43,13 +44,31 @@ def course_feedback(request, course_id):
         new_feedback.r_recommendation = request.POST['r_recommendation']
         new_feedback.save()
         return HttpResponseRedirect(reverse('courses:course_detail', args=(course.id,)))
+    else:
+        return render(request, 'courses/course_feedback.html', context)
 
 
-
-# def course_feedback_submission(request, course_id):
-#     course = get_object_or_404(Course, pk=course_id)
-#     return HttpResponseRedirect(reverse('courses:course_feedback', args=(course.id,)))
-
-
-
+def register(request):
+    registered = False
+    if request.method == 'POST':
+        user_form = UserForm(data=request.POST)
+        profile_form = UserProfileForm(data=request.POST)
+        if user_form.is_valid() and profile_form.is_valid():
+            user = user_form.save(commit=False)  # do not yet save in the DB until the password is encrypted
+            user.set_password(user.password)
+            user.save()
+            profile = profile_form.save(commit=False)
+            profile.user = user
+            profile.save()
+            registered = True
+        else:
+            print(user_form.errors, profile_form.errors)
+    else:
+        user_form = UserForm()
+        profile_form = UserProfileForm()
+    context = {'user_form': user_form, 'registered': registered, 'profile_form': profile_form}
+    return render(request,
+                  'courses/register.html',
+                  context,
+    )
 
