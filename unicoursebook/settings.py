@@ -86,3 +86,7 @@ STATIC_URL = '/static/'
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR,  'templates'),
 )
+
+# LOGIN_URL should point to our login page
+LOGIN_URL = '/schools/login/'
+LOGOUT_URL = '/schools/logout'

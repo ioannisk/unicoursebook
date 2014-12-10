@@ -2,10 +2,12 @@ from django.shortcuts import render
 from courses.models import Course, School, CourseFeedback
 from django.views import generic
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from courses.forms import UserForm, UserProfileForm
-
+from django.contrib.auth import authenticate, login
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 
 
 class SchoolsIndexView(generic.ListView):
@@ -43,12 +45,12 @@ def course_feedback(request, course_id):
         new_feedback.r_tutor_support = request.POST['r_tutor_support']
         new_feedback.r_recommendation = request.POST['r_recommendation']
         new_feedback.save()
-        return HttpResponseRedirect(reverse('courses:course_detail', args=(course.id,)))
+        return HttpResponseRedirect(reverse('courses:school_detail', args=(course.school_id,)))
     else:
         return render(request, 'courses/course_feedback.html', context)
 
 
-def register(request):
+def user_register(request):
     registered = False
     if request.method == 'POST':
         user_form = UserForm(data=request.POST)
@@ -61,8 +63,6 @@ def register(request):
             profile.user = user
             profile.save()
             registered = True
-        else:
-            print(user_form.errors, profile_form.errors)
     else:
         user_form = UserForm()
         profile_form = UserProfileForm()
@@ -72,3 +72,25 @@ def register(request):
                   context,
     )
 
+
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user:
+            if user.is_active:
+                login(request, user)
+                return HttpResponseRedirect(reverse('courses:schools_index'))
+            else:
+                return HttpResponse("Your unicoursebook account is disabled.")
+        else:
+            return HttpResponse("Invalid login details supplied.")
+    else:
+        return render(request, 'courses/login.html')
+
+
+@login_required
+def user_logout(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('courses:schools_index'))
