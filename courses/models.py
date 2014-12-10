@@ -58,6 +58,7 @@ class CourseFeedback(models.Model):
         (CHOICE_4, 'Strongly Agree'),
     )
     course = models.ForeignKey(Course)
+    user = models.ForeignKey(User)
     comment = models.CharField(max_length=1000, default='', blank=True)
     r_course_difficulty = models.IntegerField(choices=RATING_CHOICES, default=0, verbose_name='The course is easy')
     r_course_organization = models.IntegerField(choices=RATING_CHOICES, default=0,

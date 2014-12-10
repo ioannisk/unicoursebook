@@ -40,6 +40,7 @@ def course_feedback(request, course_id):
     if request.method == 'POST':
         new_feedback = CourseFeedback()
         new_feedback.course_id = course_id
+        new_feedback.user_id = request.user.id
         new_feedback.r_course_difficulty = request.POST['r_course_difficulty']
         new_feedback.r_course_organization = request.POST['r_course_organization']
         new_feedback.r_tutor_presentation = request.POST['r_tutor_presentation']
@@ -104,7 +105,6 @@ def user_login(request):
         return render(request, 'courses/login.html', context)
 
 
-@login_required
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect(reverse('courses:schools_index'))
