@@ -49,7 +49,10 @@ def course_feedback(request, course_id):
         new_feedback.save()
         return HttpResponseRedirect(reverse('courses:school_detail', args=(course.school_id,)))
     else:
-        return render(request, 'courses/course_feedback.html', context)
+        if CourseFeedback.objects.filter(user=request.user.id, course=course_id).exists():
+            return HttpResponse("You have already reviewed this course")
+        else:
+            return render(request, 'courses/course_feedback.html', context)
 
 
 def user_register(request):

@@ -72,8 +72,6 @@ class CourseFeedback(models.Model):
     # administrator can mark inappropriate comments as visible=FALSE, so end users don't see them
     visible = models.BooleanField(default=True)
 
-
-
     def __str__(self):
         return '%s (%d)' % (self.comment, self.score())
 
@@ -85,6 +83,8 @@ class CourseFeedback(models.Model):
     class Meta:
         # set default ordering (eg in admin) to most recent first
         ordering = ['-submission_date']
+        # allow 1 feedback on a course per user
+        unique_together = (("course", "user"),)
 
 
 class FeedbackVotes(models.Model):
