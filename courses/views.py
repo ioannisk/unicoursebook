@@ -33,6 +33,7 @@ def course_detail(request, course_id):
     return render(request, 'courses/course_detail.html', context)
 
 
+@login_required()
 def course_feedback(request, course_id):
     course = get_object_or_404(Course, pk=course_id)
     context = {'course': course}
@@ -77,17 +78,30 @@ def user_login(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
+        next_url = request.POST.get('next_url')  # see comment about next_url below
         user = authenticate(username=username, password=password)
         if user:
             if user.is_active:
                 login(request, user)
-                return HttpResponseRedirect(reverse('courses:schools_index'))
+                if next_url:
+                    return HttpResponseRedirect(next_url)
+                else:
+                    return HttpResponseRedirect(reverse('courses:schools_index'))
             else:
                 return HttpResponse("Your unicoursebook account is disabled.")
         else:
             return HttpResponse("Invalid login details supplied.")
     else:
-        return render(request, 'courses/login.html')
+        # parameter 'next' contains the original url in case user tried to access a view that requires authentication
+        # we need to propagate 'next' in the login form to redirect the user after login
+        # to the page where authentication was required
+
+        next_url = request.GET.get('next')
+        if next_url:
+            context = {'next_url': next_url}
+        else:
+            context = {}
+        return render(request, 'courses/login.html', context)
 
 
 @login_required
