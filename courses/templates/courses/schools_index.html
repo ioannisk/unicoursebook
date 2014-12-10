@@ -1,3 +1,10 @@
+{% load staticfiles %}
+<link rel="shortcut icon" type="image/png" href="{% static 'courses/images/favicon.ico' %}"/>
+
+
+<html>
+
+<title>Unicoursebook</title>
 {% if schools %}
     <ul>
     {% for school in schools %}
@@ -7,3 +14,4 @@
 {% else %}
     <p>No schools have been defined.</p>
 {% endif %}
+</html>

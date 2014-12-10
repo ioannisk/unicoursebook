@@ -1,3 +1,8 @@
+
+{% load staticfiles %}
+<link rel="shortcut icon" type="image/png" href="{% static 'courses/images/favicon.ico' %}"/>
+<title>Unicoursebook</title>
+
 <h1>{{ course.title }}</h1>
 
 <form action="{% url 'courses:course_feedback' course.id %}" method="post">
