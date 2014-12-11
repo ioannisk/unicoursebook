@@ -64,3 +64,12 @@ class CourseViewTest(TestCase):
         response = self.client.get(reverse('courses:course_detail', args=(test_course.id,)))
         self.assertQuerysetEqual(response.context['course_feedbacks'],
                                  ['<CourseFeedback: newer (0)>', '<CourseFeedback: older (0)>'])
+
+
+class CourseFeedbackViewTest(TestCase):
+    def test_only_users_can_submit_feedback(self):
+        test_school = School.objects.create(title='TestSchool')
+        test_course = Course.objects.create(school=test_school, title='TestCourse')
+        response = self.client.get(reverse('courses:course_feedback', args=(test_course.id,)))
+        self.assertRedirects(response, 'ucb/login/?next=/ucb/courses/%d/feedback/' % test_course.id)
+
