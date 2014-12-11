@@ -1,5 +1,5 @@
 from django.test import TestCase
-from courses.models import School, Course, CourseFeedback
+from courses.models import School, Course, CourseFeedback, User
 from django.core.urlresolvers import reverse
 from django.utils import timezone
 import datetime
@@ -37,8 +37,10 @@ class CourseViewTest(TestCase):
     def test_not_visible_feedback_is_not_displayed(self):
         test_school = School.objects.create(title='TestSchool')
         test_course = Course.objects.create(school=test_school, title='TestCourse')
-        CourseFeedback.objects.create(course=test_course, visible=False, comment='A')
-        CourseFeedback.objects.create(course=test_course, visible=True, comment='B')
+        test_user_1 = User.objects.create_user(username='TestUser1')
+        test_user_2 = User.objects.create_user(username='TestUser2')
+        CourseFeedback.objects.create(course=test_course, user=test_user_1, visible=False, comment='A')
+        CourseFeedback.objects.create(course=test_course, user=test_user_2, visible=True, comment='B')
         response = self.client.get(reverse('courses:course_detail', args=(test_course.id, )))
         self.assertQuerysetEqual(response.context['course_feedbacks'], ['<CourseFeedback: B (0)>'])
 
@@ -53,10 +55,12 @@ class CourseViewTest(TestCase):
     def test_course_detail_ordering(self):
         test_school = School.objects.create(title='TestSchool')
         test_course = Course.objects.create(school=test_school, title='TestCourse', code='test')
+        test_user_1 = User.objects.create_user(username='TestUser1')
+        test_user_2 = User.objects.create_user(username='TestUser2')
         new_time = timezone.now()
         old_time = timezone.now() - datetime.timedelta(days=30)
-        CourseFeedback.objects.create(course=test_course, submission_date=new_time, comment='newer')
-        CourseFeedback.objects.create(course=test_course, submission_date=old_time, comment='older')
+        CourseFeedback.objects.create(course=test_course, user=test_user_1, submission_date=new_time, comment='newer')
+        CourseFeedback.objects.create(course=test_course, user=test_user_2, submission_date=old_time, comment='older')
         response = self.client.get(reverse('courses:course_detail', args=(test_course.id,)))
         self.assertQuerysetEqual(response.context['course_feedbacks'],
                                  ['<CourseFeedback: newer (0)>', '<CourseFeedback: older (0)>'])
