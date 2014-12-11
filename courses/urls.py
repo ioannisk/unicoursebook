@@ -4,8 +4,9 @@ from courses import views
 
 
 urlpatterns = patterns('',
-                       url(r'^$', views.SchoolsIndexView.as_view(), name='schools_index'),
-                       url(r'^(?P<school_id>\d+)/$', views.school_detail, name='school_detail'),
+                       url(r'^$', views.index, name='index'),
+                       url(r'^schools/$', views.SchoolsIndexView.as_view(), name='schools_index'),
+                       url(r'^schools/(?P<school_id>\d+)/$', views.school_detail, name='school_detail'),
                        url(r'^courses/(?P<course_id>\d+)/$', views.course_detail, name='course_detail'),
                        url(r'^courses/(?P<course_id>\d+)/feedback/$', views.course_feedback, name='course_feedback'),
                        url(r'^register/$', views.user_register, name='user_register'),

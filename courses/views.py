@@ -9,6 +9,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 
+def index(request):
+    return render(request, 'courses/index.html')
+
 class SchoolsIndexView(generic.ListView):
     template_name = 'courses/schools_index.html'
     model = School
@@ -57,7 +60,7 @@ def course_feedback(request, course_id):
 
 
 def user_register(request):
-    registered = False
+
     if request.method == 'POST':
         user_form = UserForm(data=request.POST)
         profile_form = UserProfileForm(data=request.POST)
@@ -68,11 +71,11 @@ def user_register(request):
             profile = profile_form.save(commit=False)
             profile.user = user
             profile.save()
-            registered = True
+            return HttpResponseRedirect(reverse('courses:index'))
     else:
         user_form = UserForm()
         profile_form = UserProfileForm()
-    context = {'user_form': user_form, 'registered': registered, 'profile_form': profile_form}
+    context = {'user_form': user_form, 'profile_form': profile_form}
     return render(request,
                   'courses/register.html',
                   context,
@@ -111,4 +114,4 @@ def user_login(request):
 
 def user_logout(request):
     logout(request)
-    return HttpResponseRedirect(reverse('courses:schools_index'))
+    return HttpResponseRedirect(reverse('courses:index'))

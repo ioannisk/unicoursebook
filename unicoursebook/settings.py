@@ -75,7 +75,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -88,5 +88,5 @@ TEMPLATE_DIRS = (
 )
 
 # LOGIN_URL should point to our login page
-LOGIN_URL = '/schools/login/'
-LOGOUT_URL = '/schools/logout'
+LOGIN_URL = '/ucb/login/'
+LOGOUT_URL = '/ucb/logout'
