@@ -1,8 +1,9 @@
-from django.test import TestCase
+from django.test import TestCase, RequestFactory
 from courses.models import School, Course, CourseFeedback, User
 from django.core.urlresolvers import reverse
 from django.utils import timezone
 import datetime
+from django.http import HttpResponseBadRequest
 
 
 class SchoolViewTest(TestCase):
@@ -67,9 +68,52 @@ class CourseViewTest(TestCase):
 
 
 class CourseFeedbackViewTest(TestCase):
-    def test_only_users_can_submit_feedback(self):
+    def test_anonymous_cannot_submit_feedback(self):
         test_school = School.objects.create(title='TestSchool')
         test_course = Course.objects.create(school=test_school, title='TestCourse')
         response = self.client.get(reverse('courses:course_feedback', args=(test_course.id,)))
+        # we need to hardcode the url because of the 'next' parameter
         self.assertRedirects(response, 'ucb/login/?next=/ucb/courses/%d/feedback/' % test_course.id)
 
+    def test_user_can_submit_feedback(self):
+        test_school = School.objects.create(title='TestSchool')
+        test_course = Course.objects.create(school=test_school, title='TestCourse')
+        test_user = User.objects.create_user(username='TestUser', password='secret')
+        self.assertTrue(self.client.login(username=test_user.username, password='secret'))
+        payload = {'r_course_difficulty': CourseFeedback.CHOICE_4,
+                   'r_course_organization': CourseFeedback.CHOICE_4,
+                   'r_tutor_presentation': CourseFeedback.CHOICE_4,
+                   'r_tutor_support': CourseFeedback.CHOICE_4,
+                   'r_recommendation': CourseFeedback.CHOICE_4,
+                   'comment': 'test'}
+        response = self.client.post(reverse('courses:course_feedback', args=(test_course.id,)), payload)
+        self.assertRedirects(response, reverse('courses:school_detail', args=(test_school.id, )))
+        qs = CourseFeedback.objects.filter(user=test_user, course=test_course)
+        self.assertEqual(qs.first().score(), 5)
+
+    def test_user_can_update_feedback(self):
+        test_school = School.objects.create(title='TestSchool')
+        test_course = Course.objects.create(school=test_school, title='TestCourse')
+        test_user = User.objects.create_user(username='TestUser', password='secret')
+        CourseFeedback.objects.create(course=test_course, user=test_user, comment='old')
+        self.assertTrue(self.client.login(username=test_user.username, password='secret'))
+        payload = {'r_course_difficulty': CourseFeedback.CHOICE_4,
+                   'r_course_organization': CourseFeedback.CHOICE_4,
+                   'r_tutor_presentation': CourseFeedback.CHOICE_4,
+                   'r_tutor_support': CourseFeedback.CHOICE_4,
+                   'r_recommendation': CourseFeedback.CHOICE_4,
+                   'comment': 'new'}
+        response = self.client.post(reverse('courses:course_feedback', args=(test_course.id,)), payload)
+        self.assertRedirects(response, reverse('courses:school_detail', args=(test_school.id, )))
+        qs = CourseFeedback.objects.filter(user=test_user, course=test_course)
+        self.assertEqual(qs.first().comment, 'new')
+
+    def test_incomplete_feedback_is_rejected(self):
+        test_school = School.objects.create(title='TestSchool')
+        test_course = Course.objects.create(school=test_school, title='TestCourse')
+        test_user = User.objects.create_user(username='TestUser', password='secret')
+        CourseFeedback.objects.create(course=test_course, user=test_user, comment='old')
+        self.assertTrue(self.client.login(username=test_user.username, password='secret'))
+        incomplete_payload = {'comment': 'Incomplete'}
+        response = self.client.post(reverse('courses:course_feedback', args=(test_course.id,)), incomplete_payload)
+        self.assertEqual(response.status_code, HttpResponseBadRequest.status_code)
