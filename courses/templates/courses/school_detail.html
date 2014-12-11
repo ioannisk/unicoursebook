@@ -6,13 +6,14 @@
 <p>Read more about the school <a href="{{ school.url }}" target="_blank">here</a>.</p>
 
 {% if courses %}
-<ul>
+<table>
 {% for course in courses %}
-    <li>
-    <a href="{% url 'courses:course_detail' course.id %}"> {{ course.title }} ({{ course.code }})</a>  score: {{ course.score }}
-    </li>
+    <tr>
+        <td><a href="{% url 'courses:course_detail' course.id %}"> {{ course.title }} ({{ course.code }})</a></td>
+        <td>score: {{ course.score }}</td> <br>
+    </tr>
 {% endfor %}
-</ul>
+</table>
 {% else %}
     <p>No courses have been defined for this school.</p>
 {% endif %}

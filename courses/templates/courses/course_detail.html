@@ -7,12 +7,17 @@
 <p>Submit a review about this course <a href="{% url 'courses:course_feedback' course.id %}">here</a>.</p>
 
 {% if course_feedbacks %}
+
 <ul>
-{% for feedback in course_feedbacks %}
-    <li>
-    {{ feedback.score }} ({{ feedback.comment }})
-    </li>
+    <table>
+    {% for feedback in course_feedbacks %}
+        <tr>
+            <td>{{ feedback.score }}</td>
+            <td>{{ feedback.comment }}</td>
+
+    </tr>
 {% endfor %}
+    </table>
 </ul>
 {% else %}
     <p>No feedback has been given for this course yet.</p>
