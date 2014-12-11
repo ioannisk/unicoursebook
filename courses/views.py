@@ -39,8 +39,12 @@ def course_detail(request, course_id):
 def course_feedback(request, course_id):
     course = get_object_or_404(Course, pk=course_id)
     course_feedback_exists = False
+    old_feedback = CourseFeedback.objects.filter(user=request.user.id, course=course_id)
     if request.method == 'POST':
-        course_feedback_form = CourseFeedbackForm(data=request.POST)
+        if old_feedback:
+            course_feedback_form = CourseFeedbackForm(data=request.POST, instance=old_feedback.first())
+        else:
+            course_feedback_form = CourseFeedbackForm(data=request.POST)
         if course_feedback_form.is_valid():
             new_feedback = course_feedback_form.save(commit=False)
             new_feedback.course = course
@@ -48,7 +52,6 @@ def course_feedback(request, course_id):
             new_feedback.save()
             return HttpResponseRedirect(reverse('courses:school_detail', args=(course.school_id,)))
     else:
-        old_feedback = CourseFeedback.objects.filter(user=request.user.id, course=course_id)
         if old_feedback:
             course_feedback_form = CourseFeedbackForm(instance=old_feedback.first())
             course_feedback_exists = True
