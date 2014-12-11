@@ -4,9 +4,8 @@ from django.views import generic
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
-from courses.forms import UserForm, UserProfileForm
-from django.contrib.auth import authenticate, login
-from django.contrib.auth import logout
+from courses.forms import UserForm, UserProfileForm, CourseFeedbackForm
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 
@@ -36,23 +35,25 @@ def course_detail(request, course_id):
 @login_required()
 def course_feedback(request, course_id):
     course = get_object_or_404(Course, pk=course_id)
-    context = {'course': course}
+    course_feedback_exists = False
     if request.method == 'POST':
-        new_feedback = CourseFeedback()
-        new_feedback.course_id = course_id
-        new_feedback.user_id = request.user.id
-        new_feedback.r_course_difficulty = request.POST['r_course_difficulty']
-        new_feedback.r_course_organization = request.POST['r_course_organization']
-        new_feedback.r_tutor_presentation = request.POST['r_tutor_presentation']
-        new_feedback.r_tutor_support = request.POST['r_tutor_support']
-        new_feedback.r_recommendation = request.POST['r_recommendation']
-        new_feedback.save()
-        return HttpResponseRedirect(reverse('courses:school_detail', args=(course.school_id,)))
+        course_feedback_form = CourseFeedbackForm(data=request.POST)
+        if course_feedback_form.is_valid():
+            new_feedback = course_feedback_form.save(commit=False)
+            new_feedback.course = course
+            new_feedback.user = request.user
+            new_feedback.save()
+            return HttpResponseRedirect(reverse('courses:school_detail', args=(course.school_id,)))
     else:
-        if CourseFeedback.objects.filter(user=request.user.id, course=course_id).exists():
-            return HttpResponse("You have already reviewed this course")
+        old_feedback = CourseFeedback.objects.filter(user=request.user.id, course=course_id)
+        if old_feedback:
+            course_feedback_form = CourseFeedbackForm(instance=old_feedback.first())
+            course_feedback_exists = True
         else:
-            return render(request, 'courses/course_feedback.html', context)
+            course_feedback_form = CourseFeedbackForm()
+        context = {'course': course, 'course_feedback_form': course_feedback_form,
+                   'course_feedback_exists': course_feedback_exists}
+        return render(request, 'courses/course_feedback.html', context)
 
 
 def user_register(request):
