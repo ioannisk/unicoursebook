@@ -2,11 +2,12 @@ from django.shortcuts import render
 from courses.models import Course, School, CourseFeedback
 from django.views import generic
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseBadRequest
 from django.core.urlresolvers import reverse
 from courses.forms import UserForm, UserProfileForm, CourseFeedbackForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+
 
 
 def index(request):
@@ -51,6 +52,8 @@ def course_feedback(request, course_id):
             new_feedback.user = request.user
             new_feedback.save()
             return HttpResponseRedirect(reverse('courses:school_detail', args=(course.school_id,)))
+        else:
+            return HttpResponseBadRequest()
     else:
         if old_feedback:
             course_feedback_form = CourseFeedbackForm(instance=old_feedback.first())
@@ -75,6 +78,8 @@ def user_register(request):
             profile.user = user
             profile.save()
             return HttpResponseRedirect(reverse('courses:index'))
+        else:
+            return HttpResponseBadRequest()
     else:
         user_form = UserForm()
         profile_form = UserProfileForm()
