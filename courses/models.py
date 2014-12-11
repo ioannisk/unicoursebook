@@ -42,13 +42,21 @@ class Course(models.Model):
     def __str__(self):
         return '%s (%s)' % (self.title, self.code)
 
+    def score(self):
+        course_feedbacks = self.coursefeedback_set.all()
+        total_score = 0.0
+        total_feedbacks = 0.0
+        for feedback in course_feedbacks.iterator():    # iterator improves performance
+            total_score += feedback.score()
+            total_feedbacks += 1
+        return total_score/total_feedbacks if total_feedbacks > 0 else 0
 
 # model to describe feedback on courses
 class CourseFeedback(models.Model):
-    CHOICE_4 = 4
-    CHOICE_3 = 3
-    CHOICE_2 = 2
-    CHOICE_1 = 1
+    CHOICE_4 = 5
+    CHOICE_3 = 2
+    CHOICE_2 = -2
+    CHOICE_1 = -5
     CHOICE_0 = 0
     RATING_CHOICES = (
         (CHOICE_0, 'N/A'),
@@ -59,7 +67,7 @@ class CourseFeedback(models.Model):
     )
     course = models.ForeignKey(Course)
     user = models.ForeignKey(User)
-    comment = models.CharField(max_length=1000, default='', blank=True)
+    comment = models.TextField(max_length=1000, default='', blank=True)
     r_course_difficulty = models.IntegerField(choices=RATING_CHOICES, default=0, verbose_name='The course is easy')
     r_course_organization = models.IntegerField(choices=RATING_CHOICES, default=0,
                                                 verbose_name='The course is well organized')
@@ -76,9 +84,9 @@ class CourseFeedback(models.Model):
         return '%s (%d)' % (self.comment, self.score())
 
     def score(self):
-        return (self.r_course_difficulty + self.r_course_organization
-                + self.r_tutor_presentation + self.r_tutor_support
-                + self.r_recommendation) / 5
+        return (25*self.r_course_difficulty + 10*self.r_course_organization
+                + 25*self.r_tutor_presentation + 10*self.r_tutor_support
+                + 30*self.r_recommendation) / 100
 
     class Meta:
         # set default ordering (eg in admin) to most recent first
