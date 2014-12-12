@@ -1,16 +1,24 @@
 {% load staticfiles %}
 <link rel="shortcut icon" type="image/png" href="{% static 'courses/images/favicon.ico' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'courses/style.css' %}" />
+
 <title>Unicoursebook</title>
 
 <html>
 
 <h1>UniCourseBook</h1>
 
+
 {% if schools %}
     <ul>
-    {% for school in schools %}
-    <li><a href="{% url 'courses:school_detail' school.id %}">{{ school.title }}</a></li>
-    {% endfor %}
+
+    <table align="center">
+         {% for school in schools %}
+        <tr>
+            <td><a href="{% url 'courses:school_detail' school.id %}">{{ school.title }}</a></td>
+        </tr>
+        {% endfor %}
+    </table>
     </ul>
 {% else %}
     <p>No schools have been defined.</p>
