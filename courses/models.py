@@ -15,29 +15,12 @@ class School(models.Model):
 
 
 class Course(models.Model):
-    LEVEL_07 = '07'
-    LEVEL_08 = '08'
-    LEVEL_09 = '09'
-    LEVEL_10 = '10'
-    LEVEL_CHOICES = (
-        (LEVEL_07, '7'),
-        (LEVEL_08, '8'),
-        (LEVEL_09, '9'),
-        (LEVEL_10, '10'),
-    )
-    SEMESTER_1 = '1'
-    SEMESTER_2 = '2'
-    SEMESTER_CHOICES = (
-        (SEMESTER_1, '1'),
-        (SEMESTER_2, '2'),
-    )
     school = models.ForeignKey(School)
     code = models.CharField(max_length=20)
     title = models.CharField(max_length=200)
-    level = models.CharField(max_length=2, choices=LEVEL_CHOICES, default=LEVEL_08)
     url = models.URLField(blank=True, default='',
                                help_text='Please enter the url of the course\'s home page')
-    semester = models.CharField(max_length=1, choices=SEMESTER_CHOICES)
+
 
     def __str__(self):
         return '%s (%s)' % (self.title, self.code)
