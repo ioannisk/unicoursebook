@@ -6,22 +6,30 @@ from courses.models import School, Course
 
 DRPS_URL = 'http://www.drps.ed.ac.uk/14-15/dpt/'
 
-class Command(BaseCommand):
 
+class Command(BaseCommand):
     def handle(self, *args, **options):
-        schools_index = requests.get(DRPS_URL+'cx_schindex.htm')
+        schools_index = requests.get(DRPS_URL + 'cx_schindex.htm')
         schools_index_tree = html.fromstring(schools_index.text)
         schools_index_nodes = schools_index_tree.xpath('//a[starts-with(@href, "cx_s_su")]')
         for school_index_node in schools_index_nodes:
-            print school_index_node.text, school_index_node.attrib['href']
-            new_school = School(title=school_index_node.text, url=DRPS_URL+school_index_node.attrib['href'])
-            new_school.save()
-            school_detail = requests.get(DRPS_URL+school_index_node.attrib['href'])
+            school_title = re.search("^([^\(]+)", school_index_node.text).groups()[0]
+            school_url = DRPS_URL + school_index_node.attrib['href']
+            print school_title, school_index_node.attrib['href']
+            old_school_set = School.objects.filter(title=school_title)
+            # if school already exists update its URL
+            if old_school_set:
+                current_school = old_school_set.first()
+                current_school.url = school_url
+            else:
+                current_school = School(title=school_title, url=school_url)
+            current_school.save()
+            school_detail = requests.get(school_url)
             school_detail_tree = html.fromstring(school_detail.text)
             schools_detail_nodes = school_detail_tree.xpath('//a[starts-with(@href, "cx_sb")]')
             for school_detail_node in schools_detail_nodes:
                 print "-----", school_detail_node.text, school_detail_node.attrib['href']
-                course_index = requests.get(DRPS_URL+school_detail_node.attrib['href'])
+                course_index = requests.get(DRPS_URL + school_detail_node.attrib['href'])
                 course_index_tree = html.fromstring(course_index.text)
                 course_code_prefix = re.search("cx_sb_([^\.]+).htm", school_detail_node.attrib['href'])
                 if course_code_prefix:
@@ -31,7 +39,16 @@ class Command(BaseCommand):
                         td_node = course_index_node.getparent()
                         tr_node = td_node.getparent()
                         td_code_node = tr_node.getchildren()[0]
-                        print "----------", course_index_node.text, course_index_node.attrib['href'], td_code_node.text
-                        new_course = Course(school=new_school, title=course_index_node.text, url=DRPS_URL+course_index_node.attrib['href']
-                                            , code=td_code_node.text)
-                        new_course.save()
+                        course_title = course_index_node.text
+                        course_url = DRPS_URL + course_index_node.attrib['href']
+                        course_code = td_code_node.text
+                        print "----------", course_title, course_index_node.attrib['href'], course_code
+                        old_course_set = Course.objects.filter(school=current_school, title=course_title)
+                        if old_course_set:
+                            current_course = old_course_set.first()
+                            current_course.url = course_url
+                            current_course.code = course_code
+                        else:
+                            current_course = Course(school=current_school, title=course_title, url=course_url,
+                                                    code=course_code)
+                        current_course.save()
