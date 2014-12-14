@@ -1,21 +1,40 @@
-{% load staticfiles %}
-<link rel="shortcut icon" type="image/png" href="{% static 'courses/images/favicon.ico' %}"/>
-<link rel="stylesheet" type="text/css" href="{% static 'courses/style.css' %}" />
+{% extends "courses/base.html" %}
 
-<title>Unicoursebook</title>
-
-<h1>{{ course.title }}</h1>
-
-{% if course_feedback_exists %}
-    <p>Please update your previous feedback:</p>
-{% endif %}
-
-<form action="{% url 'courses:course_feedback' course.id %}" method="post">
-    {% csrf_token %}
-
-    {{ course_feedback_form.as_p }}
-
-    <div class="buttonHolder">
-        <input type="submit" value="Submit" />
+{% block content %}
+    <div class="page-header">
+    <h1>{{ course.title }}</h1>
     </div>
-</form>
+
+    <p class="lead">Give feedback that is honest and respectful!</p>
+
+    {% if course_feedback_exists %}
+        <p class="lead">Update your previous feedback:</p>
+    {% endif %}
+
+    <form action="{% url 'courses:course_feedback' course.id %}" method="post" role="form" class="form-horizontal">
+        {% csrf_token %}
+
+        {% for field in course_feedback_form %}
+
+            <div class="form-group">
+                <label class="control-label col-sm-4">{{ field.label }}</label>
+
+                <div class="col-sm-4 ">
+                    {{ field }}
+                </div>
+            </div>
+
+        {% endfor %}
+
+        <div class="form-group">
+            <div class="col-sm-offset-4 col-sm-4">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+
+    </form>
+
+
+
+
+{% endblock %}

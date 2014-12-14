@@ -1,26 +1,34 @@
-{% load staticfiles %}
-<link rel="shortcut icon" type="image/png" href="{% static 'courses/images/favicon.ico' %}"/>
-<link rel="stylesheet" type="text/css" href="{% static 'courses/style.css' %}" />
+{% extends "courses/base.html" %}
 
-<title>Unicoursebook</title>
+{% block content %}
+    <div class="page-header">
+    <h1>{{ course.title }} ({{ course.code }})</h1>
+    </div>
+    <p class="lead">Read more about this course <a href="{{ course.url }}" target="_blank">here</a>.</p>
+    <p class="lead">Submit a review about this course <a href="{% url 'courses:course_feedback' course.id %}">here</a>.</p>
 
-<h1>{{ course.title }} ({{ course.code }})</h1>
-<p>Read more about this course <a href="{{ course.url }}" target="_blank">here</a>.</p>
-<p>Submit a review about this course <a href="{% url 'courses:course_feedback' course.id %}">here</a>.</p>
+    {% if course_feedbacks %}
 
-{% if course_feedbacks %}
 
-<ul>
-    <table align="center">
-    {% for feedback in course_feedbacks %}
-        <tr>
-            <td>{{ feedback.score }}</td>
-            <td>{{ feedback.comment }}</td>
+            <table class="table">
+            <thead>
+            <tr>
+                <th>Score</th>
+                <th>Comment</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for feedback in course_feedbacks %}
+                    <tr>
+                        <td>{{ feedback.score | floatformat:2 }}</td>
+                        <td>{{ feedback.comment }}</td>
 
-    </tr>
-{% endfor %}
-    </table>
-</ul>
-{% else %}
-    <p>No feedback has been given for this course yet.</p>
-{% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+
+    {% else %}
+        <p>No feedback has been given for this course yet.</p>
+    {% endif %}
+{% endblock %}

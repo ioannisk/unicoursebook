@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {#    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}"#}
+    {#          rel="stylesheet" media="screen">#}
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+
+    {#    <!-- Optional theme -->#}
+    {#    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">#}
+
+
+    <title>Unicoursebook</title>
+</head>
+
+<body>
+
+
+<style>
+    .drop-shadow {
+        -webkit-box-shadow: 0 0 5px 2px rgba(0, 0, 0, .5);
+        box-shadow: 0 0 5px 2px rgba(0, 0, 0, .5);
+    }
+
+    .container.drop-shadow {
+        padding-left: 0;
+        padding-right: 0;
+
+    }
+
+    body {
+            background-color: #041e42;
+    }
+
+    .container {
+        background-color: #ffffff;
+        height: 1000px ;
+
+    }
+
+
+</style>
+
+<div class="container drop-shadow ">
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            {% block nav %}
+                <nav class="navbar navbar-default" role="navigation">
+
+                    <div class="navbar-header">
+
+                        <a class="navbar-brand" href="{% url 'courses:index' %}">UniCourseBook</a>
+                    </div>
+
+
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav">
+                            <li><a href="{% url 'courses:schools_index' %}">Schools</a></li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li>{% if user.is_authenticated %}
+                                <a href="{% url 'courses:user_logout' %}">Logout</a>
+                            {% else %}
+                                <a href="{% url 'courses:user_login' %}">Login</a>
+                            {% endif %}</li>
+                        </ul>
+                    </div>
+
+                </nav>
+
+
+            {% endblock %}
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            {% block content %}
+            {% endblock %}
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+</div>
+
+
+{#<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>#}
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
+
+</body>
+</html>
+
+
+
+
+
+

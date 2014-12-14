@@ -1,20 +1,39 @@
-{% load staticfiles %}
-<link rel="shortcut icon" type="image/png" href="{% static 'courses/images/favicon.ico' %}"/>
-<link rel="stylesheet" type="text/css" href="{% static 'courses/style.css' %}" />
+{% extends "courses/base.html" %}
 
-<title>Unicoursebook</title>
-<h1>{{ school.title }}</h1>
-<p>Read more about the school <a href="{{ school.url }}" target="_blank">here</a>.</p>
+{% block content %}
+    <div class="page-header">
+    <h1>{{ school.title }}</h1>
+    </div>
 
-{% if courses %}
-<table align="center">
-{% for course in courses %}
-    <tr>
-        <td><a href="{% url 'courses:course_detail' course.id %}"> {{ course.title }} ({{ course.code }})</a></td>
-        <td>score: {{ course.score }}</td> <br>
-    </tr>
-{% endfor %}
-</table>
-{% else %}
-    <p>No courses have been defined for this school.</p>
-{% endif %}
+
+    <p class="lead">Read more about the school <a href="{{ school.url }}" target="_blank">here</a>.</p>
+
+    {% if courses %}
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Course</th>
+                <th>Score</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for course in courses %}
+                <tr>
+                    <td>
+                        <a href="{% url 'courses:course_detail' course.id %}"> {{ course.title }}
+                            ({{ course.code }})</a>
+                    </td>
+                    <td>{{ course.score | floatformat:2}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No courses have been defined for this school.</p>
+    {% endif %}
+
+{% endblock %}
+
+
+
+
