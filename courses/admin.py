@@ -1,5 +1,5 @@
 from django.contrib import admin
-from courses.models import Course, CourseFeedback, School, UserProfile
+from courses.models import Course, CourseFeedback, School
 from django.forms import Textarea, ModelForm
 
 # model form is needed in order to use text area for comment
@@ -21,11 +21,11 @@ class CourseFeedbackAdmin(admin.ModelAdmin):
 
 class CourseAdmin(admin.ModelAdmin):
     model = Course
-    fields = ['school', 'title', 'code', 'level', 'semester', 'url']
+    fields = ['school', 'title', 'code', 'url']
 
 
 admin.site.register(School)
 admin.site.register(Course, CourseAdmin)
 admin.site.register(CourseFeedback, CourseFeedbackAdmin)
-admin.site.register(UserProfile)
+
 

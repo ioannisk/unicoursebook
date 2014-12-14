@@ -4,14 +4,14 @@ from django.views import generic
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseBadRequest
 from django.core.urlresolvers import reverse
-from courses.forms import UserForm, UserProfileForm, CourseFeedbackForm
+from courses.forms import UserForm, CourseFeedbackForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 
-
 def index(request):
     return render(request, 'courses/index.html')
+
 
 class SchoolsIndexView(generic.ListView):
     template_name = 'courses/schools_index.html'
@@ -66,24 +66,19 @@ def course_feedback(request, course_id):
 
 
 def user_register(request):
-
     if request.method == 'POST':
         user_form = UserForm(data=request.POST)
-        profile_form = UserProfileForm(data=request.POST)
-        if user_form.is_valid() and profile_form.is_valid():
+        if user_form.is_valid():
             user = user_form.save(commit=False)  # do not yet save in the DB until the password is encrypted
             user.set_password(user.password)
             user.save()
-            profile = profile_form.save(commit=False)
-            profile.user = user
-            profile.save()
             return HttpResponseRedirect(reverse('courses:index'))
         else:
             return HttpResponseBadRequest()
     else:
         user_form = UserForm()
-        profile_form = UserProfileForm()
-    context = {'user_form': user_form, 'profile_form': profile_form}
+
+    context = {'user_form': user_form}
     return render(request,
                   'courses/register.html',
                   context,
