@@ -9,8 +9,10 @@ DRPS_URL = 'http://www.drps.ed.ac.uk/14-15/dpt/'
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
+        # getting the DRPS page which list all the schools
         schools_index = requests.get(DRPS_URL + 'cx_schindex.htm')
         schools_index_tree = html.fromstring(schools_index.text)
+        # After view-page-source we notice that
         schools_index_nodes = schools_index_tree.xpath('//a[starts-with(@href, "cx_s_su")]')
         for school_index_node in schools_index_nodes:
             school_title = re.search("^([^\(]+)", school_index_node.text).groups()[0]
@@ -42,13 +44,15 @@ class Command(BaseCommand):
                         course_title = course_index_node.text
                         course_url = DRPS_URL + course_index_node.attrib['href']
                         course_code = td_code_node.text
-                        print "----------", course_title, course_index_node.attrib['href'], course_code
                         old_course_set = Course.objects.filter(school=current_school, title=course_title)
                         if old_course_set:
                             current_course = old_course_set.first()
                             current_course.url = course_url
                             current_course.code = course_code
+                            course_status = "OLD"
                         else:
                             current_course = Course(school=current_school, title=course_title, url=course_url,
                                                     code=course_code)
+                            course_status = "NEW"
+                        print "----------", course_status,  course_title, course_index_node.attrib['href'], course_code
                         current_course.save()
