@@ -10,7 +10,7 @@ class School(models.Model):
     url = models.URLField(blank=True, default='',
                                help_text='Please enter the url of the School\'s home page')
 
-    def __str__(self):
+    def __unicode__(self):
         return self.title
 
 
@@ -21,9 +21,8 @@ class Course(models.Model):
     url = models.URLField(blank=True, default='',
                                help_text='Please enter the url of the course\'s home page')
 
-
-    def __str__(self):
-        return '%s (%s)' % (self.title, self.code)
+    def __unicode__(self):
+        return u'%s (%s)' % (self.title, self.code)
 
     def score(self):
         course_feedbacks = self.coursefeedback_set.all()
@@ -63,8 +62,8 @@ class CourseFeedback(models.Model):
     # administrator can mark inappropriate comments as visible=FALSE, so end users don't see them
     visible = models.BooleanField(default=True)
 
-    def __str__(self):
-        return '%s (%d)' % (self.comment, self.score())
+    def __unicode__(self):
+        return u'%s (%d)' % (self.comment, self.score())
 
     def score(self):
         return (25*self.r_course_difficulty + 10*self.r_course_organization
