@@ -1,32 +1,141 @@
 {% extends "courses/base.html" %}
+{% load staticfiles %}
 
 {% block content %}
+
+    <style>
+        .clipwrapper {
+            position: relative;
+            height: 33px;
+            width: 33px;
+        }
+
+        .clip {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .pos-1 {
+            clip: rect(0px 38px 33px 5px);
+            left: -5;
+        }
+
+        .pos-2 {
+            clip: rect(0px 76px 33px 43px);
+            left: -35px;
+        }
+
+        .pos-3 {
+            clip: rect(0px 114px 33px 81px);
+            left: -71px;
+        }
+
+        .pos-4 {
+            clip: rect(0px 152px 33px 117px);
+            left: -106px;
+        }
+
+        .pos-5 {
+            clip: rect(0px 190px 33px 150px);
+            left: -140px;
+        }
+
+    </style>
+
+
+    {#    keep this here in order to tweak the sprite#}
+    {#    <div class="clipwrapper">#}
+    {#        <img src="{% static "courses/images/faces.jpg" %}" alt="faces" width="191" height="33" class="clip pos-1"/>#}
+    {#    </div>#}
+    {#    <div class="clipwrapper">#}
+    {#        <img src="{% static "courses/images/faces.jpg" %}" alt="faces" width="191" height="33" class="clip pos-2"/>#}
+    {#    </div>#}
+    {#    <div class="clipwrapper">#}
+    {#        <img src="{% static "courses/images/faces.jpg" %}" alt="faces" width="191" height="33" class="clip pos-3"/>#}
+    {#    </div>#}
+    {#    <div class="clipwrapper">#}
+    {#        <img src="{% static "courses/images/faces.jpg" %}" alt="faces" width="191" height="33" class="clip pos-4"/>#}
+    {#    </div>#}
+    {#    <div class="clipwrapper">#}
+    {#        <img src="{% static "courses/images/faces.jpg" %}" alt="faces" width="191" height="33" class="clip pos-5"/>#}
+    {#    </div>#}
+
+
+
+    <script lang="javascript">
+        function show_choice(choice) {
+            var src = "{% static "courses/images/faces.jpg" %}";
+            var pos = "pos-3";
+            switch (choice) {
+                case -5:
+                    pos = "pos-1";
+                    break;
+                case -2:
+                    pos = "pos-2";
+                    break;
+                case 0:
+                    pos = "pos-3";
+                    break;
+                case 2:
+                    pos = "pos-4";
+                    break;
+                case 5:
+                    pos = "pos-5";
+                    break;
+            }
+            document.write('<div class="clipwrapper"><img src=' + src + ' alt="faces" width="191" height="33" class="clip ' + pos + '"/></div>');
+        }
+    </script>
+
     <div class="page-header">
-    <h1>{{ course.title }} ({{ course.code }})</h1>
+        <h1>{{ course.title }} ({{ course.code }})</h1>
     </div>
     <p class="lead">Read more about this course <a href="{{ course.url }}" target="_blank">here</a>.</p>
-    <p class="lead">Submit a review about this course <a href="{% url 'courses:course_feedback' course.id %}">here</a>.</p>
+    <p class="lead">Submit a review about this course <a href="{% url 'courses:course_feedback' course.id %}">here</a>.
+    </p>
 
     {% if course_feedbacks %}
 
 
-            <table class="table">
+        <table class="table">
             <thead>
             <tr>
                 <th>Score</th>
                 <th>Comment</th>
+                <th>Date</th>
+                <th>Difficulty</th>
+                <th>Organization</th>
+                <th>T. presentation</th>
+                <th>T. support</th>
+                <th>Recommendation</th>
             </tr>
             </thead>
             <tbody>
-                {% for feedback in course_feedbacks %}
-                    <tr>
-                        <td>{{ feedback.score | floatformat:2 }}</td>
-                        <td>{{ feedback.comment }}</td>
-
-                    </tr>
-                {% endfor %}
+            {% for feedback in course_feedbacks %}
+                <tr>
+                    <td>{{ feedback.score | floatformat:2 }}</td>
+                    <td>{{ feedback.comment }}</td>
+                    <td>{{ feedback.submission_date }}</td>
+                    <td align="center">
+                        <script>show_choice({{ feedback.r_course_difficulty }});</script>
+                    </td>
+                    <td align="center">
+                        <script>show_choice({{ feedback.r_course_organization }});</script>
+                    </td>
+                    <td align="center">
+                        <script>show_choice({{ feedback.r_tutor_presentation }});</script>
+                    </td>
+                    <td align="center">
+                        <script>show_choice({{ feedback.r_tutor_support }});</script>
+                    </td>
+                    <td align="center">
+                        <script>show_choice({{ feedback.r_recommendation }});</script>
+                    </td>
+                </tr>
+            {% endfor %}
             </tbody>
-            </table>
+        </table>
 
     {% else %}
         <p>No feedback has been given for this course yet.</p>
