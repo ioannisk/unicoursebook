@@ -8,6 +8,9 @@
 
     <p class="lead">UniCourseBook is free!</p>
 
+{#    {% if valid == False %}#}
+{#        <p class="lead">Registration information invalid</p>#}
+{#    {% endif %}#}
     <form class="form-horizontal" id="user_form" method="post" action="{% url 'courses:user_register' %}"
           role="form">
 
@@ -15,13 +18,25 @@
 
         {% for field in user_form %}
 
-            <div class="form-group">
-                <label class="control-label col-sm-2">{{ field.label }}</label>
+            {% if field.errors %}
+                <div class="form-group error">
+                    <label class="control-label col-sm-2">{{ field.label }}</label>
 
-                <div class="col-sm-4 ">
-                    {{ field }}
+                    <div class="controls col-sm-10">{{ field }}
+                        <span class="help-inline text-danger">
+                            {% for error in  field.errors %}{{ error }}{% endfor %}
+                        </span>
+                    </div>
                 </div>
-            </div>
+            {% else %}
+                <div class="form-group">
+                    <label class="control-label col-sm-2">{{ field.label }}</label>
+
+                    <div class="controls col-sm-10">
+                        {{ field }}
+                    </div>
+                </div>
+            {% endif %}
 
         {% endfor %}
 
