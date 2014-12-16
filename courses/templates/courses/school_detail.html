@@ -23,7 +23,7 @@
                         <a href="{% url 'courses:course_detail' course.id %}"> {{ course.title }}
                             ({{ course.code }})</a>
                     </td>
-                    <td>{{ course.score | floatformat:2}}</td>
+                    <td align="right">{{ course.score | floatformat:2 }}</td>
                 </tr>
             {% endfor %}
             </tbody>

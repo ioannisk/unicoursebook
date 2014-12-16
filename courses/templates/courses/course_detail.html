@@ -40,6 +40,13 @@
             clip: rect(0px 190px 33px 150px);
             left: -140px;
         }
+        .center{
+            text-align: center;
+        }
+        .nowrap{
+            white-space: nowrap;
+        }
+
 
     </style>
 
@@ -91,6 +98,7 @@
     <div class="page-header">
         <h1>{{ course.title }} ({{ course.code }})</h1>
     </div>
+    <h4><a href="{% url 'courses:school_detail' course.school_id %}">{{ course.school.title}}</a> </h4>
     <p class="lead">Read more about this course <a href="{{ course.url }}" target="_blank">here</a>.</p>
     <p class="lead">Submit a review about this course <a href="{% url 'courses:course_feedback' course.id %}">here</a>.
     </p>
@@ -98,38 +106,38 @@
     {% if course_feedbacks %}
 
 
-        <table class="table">
+        <table class="table table-bordered">
             <thead>
             <tr>
                 <th>Score</th>
-                <th>Comment</th>
-                <th>Date</th>
-                <th>Difficulty</th>
-                <th>Organization</th>
-                <th>T. presentation</th>
-                <th>T. support</th>
-                <th>Recommendation</th>
+                <th class="col-md-6">Comment</th>
+                <th class="nowrap">Date</th>
+                <th title="Difficulty" class="center">D</th>
+                <th title="Organization" class="center">O</th>
+                <th title="Tutor presentation" class="center">P</th>
+                <th title="Tutor support" class="center">S</th>
+                <th title="Recommendation" class="center">R</th>
             </tr>
             </thead>
             <tbody>
             {% for feedback in course_feedbacks %}
                 <tr>
-                    <td>{{ feedback.score | floatformat:2 }}</td>
+                    <td align="right">{{ feedback.score | floatformat:2 }}</td>
                     <td>{{ feedback.comment }}</td>
-                    <td>{{ feedback.submission_date }}</td>
-                    <td align="center">
+                    <td>{{ feedback.submission_date |date:"M d, Y"}}</td>
+                    <td>
                         <script>show_choice({{ feedback.r_course_difficulty }});</script>
                     </td>
-                    <td align="center">
+                    <td>
                         <script>show_choice({{ feedback.r_course_organization }});</script>
                     </td>
-                    <td align="center">
+                    <td>
                         <script>show_choice({{ feedback.r_tutor_presentation }});</script>
                     </td>
-                    <td align="center">
+                    <td>
                         <script>show_choice({{ feedback.r_tutor_support }});</script>
                     </td>
-                    <td align="center">
+                    <td>
                         <script>show_choice({{ feedback.r_recommendation }});</script>
                     </td>
                 </tr>
