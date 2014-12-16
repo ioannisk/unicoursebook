@@ -1,4 +1,4 @@
-from django.test import TestCase, RequestFactory
+from django.test import TestCase
 from courses.models import School, Course, CourseFeedback, User
 from django.core.urlresolvers import reverse
 from django.utils import timezone
@@ -72,7 +72,7 @@ class CourseFeedbackViewTest(TestCase):
         test_school = School.objects.create(title='TestSchool')
         test_course = Course.objects.create(school=test_school, title='TestCourse')
         response = self.client.get(reverse('courses:course_feedback', args=(test_course.id,)))
-        # we need to hardcode the url because of the 'next' parameter
+        # we need to hardcode the url because of the 'next' parameter. See views.user_login for  explanation of 'next'
         self.assertRedirects(response, 'ucb/login/?next=/ucb/courses/%d/feedback/' % test_course.id)
 
     def test_user_can_submit_feedback(self):
