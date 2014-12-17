@@ -13,7 +13,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         add_users()
         users = User.objects.filter(username__startswith="user_")
-        courses = Course.objects.all()[:5]
+        courses = Course.objects.all()
         for user in users:
             for course in courses:
                 CourseFeedback.objects.create(course=course, user=user, comment=get_paragraph(),
