@@ -27,12 +27,17 @@
                 <input type="password" name="password" id="password"/>
             </div>
         </div>
+
+
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-4">
                 <button type="submit" class="btn btn-primary">Submit</button>
             </div>
         </div>
     </form>
+    {% if valid == False %}
+            <p class="text-danger  col-sm-offset-2 col-sm-2">Login details invalid</p>
+        {% endif %}
 
 
 {% endblock %}
