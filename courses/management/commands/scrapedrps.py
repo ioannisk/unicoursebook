@@ -12,7 +12,7 @@ class Command(BaseCommand):
         # getting the DRPS page which list all the schools
         schools_index = requests.get(DRPS_URL + 'cx_schindex.htm')
         schools_index_tree = html.fromstring(schools_index.text)
-        # After view-page-source we notice that
+        # After view-page-source we notice that school links share cx_s_su start
         schools_index_nodes = schools_index_tree.xpath('//a[starts-with(@href, "cx_s_su")]')
         for school_index_node in schools_index_nodes:
             school_title = re.search("^([^\(]+)", school_index_node.text).groups()[0]
@@ -28,11 +28,14 @@ class Command(BaseCommand):
             current_school.save()
             school_detail = requests.get(school_url)
             school_detail_tree = html.fromstring(school_detail.text)
+            # After view-page-source we notice that school subschools links share cx_sb start
             schools_detail_nodes = school_detail_tree.xpath('//a[starts-with(@href, "cx_sb")]')
             for school_detail_node in schools_detail_nodes:
                 print "-----", school_detail_node.text, school_detail_node.attrib['href']
                 course_index = requests.get(DRPS_URL + school_detail_node.attrib['href'])
                 course_index_tree = html.fromstring(course_index.text)
+                # After view-page-source we notice that school courses links pattern can be found by
+                # looking at the schools url and extracting its initials with regex.
                 course_code_prefix = re.search("cx_sb_([^\.]+).htm", school_detail_node.attrib['href'])
                 if course_code_prefix:
                     prefix = course_code_prefix.groups()[0]
@@ -54,5 +57,5 @@ class Command(BaseCommand):
                             current_course = Course(school=current_school, title=course_title, url=course_url,
                                                     code=course_code)
                             course_status = "NEW"
-                        print "----------", course_status,  course_title, course_index_node.attrib['href'], course_code
+                        print "----------", course_status, course_title, course_index_node.attrib['href'], course_code
                         current_course.save()

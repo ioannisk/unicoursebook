@@ -89,6 +89,7 @@ class CourseFeedbackViewTest(TestCase):
         response = self.client.post(reverse('courses:course_feedback', args=(test_course.id,)), payload)
         self.assertRedirects(response, reverse('courses:school_detail', args=(test_school.id, )))
         qs = CourseFeedback.objects.filter(user=test_user, course=test_course)
+        # 5 is the score that we expect if all choices are CHOICE_4, see models.py for more
         self.assertEqual(qs.first().score(), 5)
 
     def test_user_can_update_feedback(self):
